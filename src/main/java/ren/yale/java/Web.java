@@ -9,7 +9,13 @@ import io.vertx.ext.web.handler.CookieHandler;
 import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.sstore.LocalSessionStore;
+import ren.yale.java.controller.Hello;
 import ren.yale.java.controller.Index;
+import ren.yale.java.tools.AnnotationProcessor;
+import ren.yale.java.tools.MethodInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Yale
@@ -44,5 +50,24 @@ public class Web extends AbstractVerticle {
         };
 
         router.route("/static/*").handler(var1);
+
+        Map<String, MethodInfo> map = new HashMap<>();
+        AnnotationProcessor.get(map,Hello.class);
+
+        for (Map.Entry<String,MethodInfo> en:map.entrySet()) {
+
+            if (en.getValue().getHttpMethod() == null){
+                router.route().handler(getHandler(en.getValue()));
+            }
+
+        }
+
+    }
+
+    private Handler<RoutingContext> getHandler(MethodInfo methodInfo){
+
+        return routingContext -> {
+
+        };
     }
 }

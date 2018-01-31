@@ -2,6 +2,10 @@ package ren.yale.java;
 
 import ren.yale.java.controller.Hello;
 import ren.yale.java.tools.AnnotationProcessor;
+import ren.yale.java.tools.MethodInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Hello world!
@@ -10,7 +14,6 @@ import ren.yale.java.tools.AnnotationProcessor;
 public class App {
     public static void main( String[] args ) {
 
-        AnnotationProcessor.get(Hello.class);
         System.out.println( "Hello World!" );
     }
 }

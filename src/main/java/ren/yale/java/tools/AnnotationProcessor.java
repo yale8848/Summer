@@ -20,14 +20,15 @@ public class AnnotationProcessor {
     private AnnotationProcessor() {
     }
 
-    public static Map<String, MethodInfo> get(Class clazz) {
+    public static void get(List<ClassInfo> classInfos,Class clazz) {
 
         if (!isRestClass(clazz)){
-            return null;
+            return ;
         }
         Path path = (Path) clazz.getAnnotation(Path.class);
 
-        Map<String, MethodInfo> output = new LinkedHashMap<>();
+        ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassPath(path.value());
 
         for (Method method : clazz.getMethods()) {
 
@@ -52,7 +53,7 @@ public class AnnotationProcessor {
                     if (argInfo.getAnnotation()!=null){
                         methodInfo.addArgInfo(argInfo);
                     }
-                    output.put(p,methodInfo);
+                    classInfo.addMethodInfo(methodInfo);
                 }
 
                 i++;
@@ -60,8 +61,6 @@ public class AnnotationProcessor {
             }
 
         }
-
-        return output;
     }
     private static boolean isRestClass(Class cls) {
 
