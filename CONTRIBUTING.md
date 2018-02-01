@@ -1,0 +1,4 @@
+- fork https://github.com/yale8848/Summer
+- git checkout **`dev`**
+- commit & push
+- pull request
