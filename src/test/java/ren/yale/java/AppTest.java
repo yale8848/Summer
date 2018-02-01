@@ -3,6 +3,7 @@ package ren.yale.java;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import ren.yale.java.controller.Hello;
 
 /**
  * Unit test for simple App.
@@ -31,8 +32,18 @@ public class AppTest
     /**
      * Rigourous Test :-)
      */
-    public void testApp()
-    {
-        assertTrue( true );
+    public void testApp() {
+
+        SummerServer summerServer =SummerServer.create(8080);
+
+        summerServer.getSummerRouter().registerResource(Hello.class);
+
+        summerServer.start();
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

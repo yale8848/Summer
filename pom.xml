@@ -7,8 +7,12 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
+
   <name>Summer</name>
-  <url>http://maven.apache.org</url>
+  <description>JAX-RS Vertx</description>
+  <url>http://yale.ren</url>
+  <inceptionYear>2018</inceptionYear>
+
 
   <properties>
     <vertx.version>3.5.0</vertx.version>
@@ -65,5 +69,6 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 </project>
