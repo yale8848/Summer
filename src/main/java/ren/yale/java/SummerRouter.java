@@ -92,7 +92,12 @@ public class SummerRouter {
                 }else if (methodInfo.getHttpMethod()== HEAD.class){
                     route = router.head(p);
                 }
-                route.handler(getHandler(classInfo,methodInfo));
+                if (methodInfo.isBlocking()){
+                    route.blockingHandler(getHandler(classInfo,methodInfo));
+                }else{
+                    route.handler(getHandler(classInfo,methodInfo));
+                }
+
             }
         }
 
