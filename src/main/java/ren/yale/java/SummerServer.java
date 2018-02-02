@@ -1,9 +1,9 @@
 package ren.yale.java;
 
-import io.vertx.core.AbstractVerticle;
+import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
-import io.vertx.ext.web.Router;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.Router;
 
 /**
  * Yale
