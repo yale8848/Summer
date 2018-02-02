@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Yale
  *
- * @create 2018-01-31 17:04
+ * create at:  2018-01-31 17:04
  **/
 @Path("/hello")
 @Before(TestInterceptor.class)

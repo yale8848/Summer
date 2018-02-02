@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Yale
  *
- * @create 2018-01-31 17:25
+ * create at:  2018-01-31 17:25
  **/
 class MethodsProcessor {
 
@@ -177,7 +177,7 @@ class MethodsProcessor {
     }
     private static boolean isRestClass(Class cls) {
 
-        List<Class<? extends Annotation>> search = Arrays.asList(Path.class);
+        List<Class<Path>> search = Arrays.asList(Path.class);
 
         for (Class<? extends Annotation> item: search) {
             if (cls.getAnnotation(item) != null) {
