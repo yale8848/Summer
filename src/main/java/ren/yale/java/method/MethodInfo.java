@@ -23,6 +23,14 @@ public class MethodInfo {
     private List<ArgInfo> argInfoList = new ArrayList<>();
     private Interceptor[] befores;
 
+    private boolean isBlocking;
+    public boolean isBlocking() {
+        return isBlocking;
+    }
+    public void setBlocking(boolean blocking) {
+        isBlocking = blocking;
+    }
+
     public Interceptor[] getBefores() {
         return befores;
     }

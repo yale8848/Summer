@@ -1,5 +1,6 @@
 package ren.yale.java;
 
+import ren.yale.java.annotation.Blocking;
 import ren.yale.java.aop.Before;
 import ren.yale.java.interceptor.Interceptor;
 import ren.yale.java.method.ArgInfo;
@@ -121,6 +122,12 @@ class MethodsProcessor {
                     getBefores((Before) method.getAnnotation(Before.class));
             if (interceptorsMethodBefore!=null){
                 methodInfo.setBefores(interceptorsMethodBefore);
+            }
+
+
+            Blocking blocking = method.getAnnotation(Blocking.class);
+            if (blocking!=null){
+                methodInfo.setBlocking(true);
             }
 
 
