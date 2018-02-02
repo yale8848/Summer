@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Yale
  *
- * @create 2018-02-01 14:08
+ * create at:  2018-02-01 14:08
  **/
 public class SummerRouter {
 
@@ -92,7 +92,12 @@ public class SummerRouter {
                 }else if (methodInfo.getHttpMethod()== HEAD.class){
                     route = router.head(p);
                 }
-                route.handler(getHandler(classInfo,methodInfo));
+                if (methodInfo.isBlocking()){
+                    route.blockingHandler(getHandler(classInfo,methodInfo));
+                }else{
+                    route.handler(getHandler(classInfo,methodInfo));
+                }
+
             }
         }
 

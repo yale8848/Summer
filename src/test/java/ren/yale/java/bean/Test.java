@@ -3,7 +3,7 @@ package ren.yale.java.bean;
 /**
  * Yale
  *
- * @create 2018-02-01 17:23
+ * create at:  2018-02-01 17:23
  **/
 public class Test {
     private String name;

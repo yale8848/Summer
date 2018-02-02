@@ -6,7 +6,7 @@ import ren.yale.java.interceptor.Interceptor;
 /**
  * Yale
  *
- * @create 2018-02-01 17:24
+ * create at:  2018-02-01 17:24
  **/
 public class TestInterceptor implements Interceptor {
     @Override

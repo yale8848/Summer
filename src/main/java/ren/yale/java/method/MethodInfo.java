@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Yale
  *
- * @create 2018-01-31 17:46
+ * create at:  2018-01-31 17:46
  **/
 public class MethodInfo {
 
@@ -22,6 +22,14 @@ public class MethodInfo {
     private Method method;
     private List<ArgInfo> argInfoList = new ArrayList<>();
     private Interceptor[] befores;
+
+    private boolean isBlocking;
+    public boolean isBlocking() {
+        return isBlocking;
+    }
+    public void setBlocking(boolean blocking) {
+        isBlocking = blocking;
+    }
 
     public Interceptor[] getBefores() {
         return befores;
