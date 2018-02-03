@@ -1,6 +1,7 @@
 package ren.yale.java;
 
 import ren.yale.java.controller.Hello;
+import ren.yale.java.verticle.RXDBVerticle;
 
 /**
  * Yale
@@ -12,7 +13,7 @@ public class TestMain {
         SummerServer summerServer =SummerServer.create(8080);
 
         summerServer.getSummerRouter().registerResource(Hello.class);
-
+        summerServer.getVertx().deployVerticle(RXDBVerticle.class.getName());
         summerServer.start();
     }
 }
