@@ -4,6 +4,8 @@ import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.Router;
+import ren.yale.java.event.EventMessage;
+import ren.yale.java.event.EventMessageCodec;
 
 /**
  * Yale
@@ -23,6 +25,10 @@ public class SummerServer  {
         this.summerRouter = new SummerRouter(router,vertx);
         this.port=port;
         this.host = host;
+        init();
+    }
+    private void init(){
+        vertx.eventBus().getDelegate().registerDefaultCodec(EventMessage.class, new EventMessageCodec());
     }
     public Vertx getVertx(){
         return vertx;
@@ -49,6 +55,7 @@ public class SummerServer  {
         vertx.deployVerticle(WebServer.class.getName());
     }
     public void start( DeploymentOptions options) {
+
         vertx.deployVerticle(WebServer.class.getName(),options);
     }
 

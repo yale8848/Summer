@@ -1,17 +1,20 @@
 package ren.yale.java.controller;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.HttpServerResponse;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.http.HttpServerRequest;
+import io.vertx.reactivex.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
+import ren.yale.java.SummerResponse;
 import ren.yale.java.aop.Before;
 import ren.yale.java.bean.Test;
+import ren.yale.java.bean.UserInfo;
 import ren.yale.java.test.TestInterceptor;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Yale
@@ -36,6 +39,7 @@ public class Hello {
     @POST
     @Path("/h2")
     public Test h2(@QueryParam("test") String test,@FormParam("test1") String test1) {
+
         return new Test();
     }
 
@@ -43,6 +47,9 @@ public class Hello {
     @Path("/h3")
     public void h3(@Context HttpServerResponse response, @Context Vertx vertx){
         response.end("<html><body>bb</body></html>");
+        UserInfo u = new UserInfo();
+        u.setName("bbb");
+        u.setPassword("ccc");
     }
 
     @GET

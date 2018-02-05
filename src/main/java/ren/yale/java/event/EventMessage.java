@@ -6,7 +6,7 @@ package ren.yale.java.event;
  **/
 public class EventMessage {
     private boolean success = false;
-    private String message ="error";
+    private String message ="";
 
     public boolean isSuccess() {
         return success;

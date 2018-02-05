@@ -9,6 +9,7 @@ import io.vertx.reactivex.ext.web.Route;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import io.vertx.reactivex.ext.web.Session;
+import io.vertx.reactivex.ext.web.client.WebClient;
 import io.vertx.reactivex.ext.web.handler.BodyHandler;
 import io.vertx.reactivex.ext.web.handler.CookieHandler;
 import io.vertx.reactivex.ext.web.handler.SessionHandler;
@@ -38,6 +39,7 @@ public class SummerRouter {
     private List<ClassInfo> classInfos;
     private Router router;
     private Vertx vertx;
+    private WebClient webClient;
     public SummerRouter(Router router,Vertx vertx){
         this.router = router;
         this.vertx =vertx;
@@ -54,6 +56,7 @@ public class SummerRouter {
         SessionHandler handler = SessionHandler.create(LocalSessionStore.create(vertx));
         handler.setNagHttps(true);
         router.route().handler(handler);
+        webClient = WebClient.create(vertx);
     }
     private boolean isRegister(Class clazz){
 
@@ -64,6 +67,8 @@ public class SummerRouter {
         }
         return false;
     }
+
+
 
     public void registerResource(Class clazz){
 
@@ -188,11 +193,14 @@ public class SummerRouter {
         }else if (clz == HttpServerRequest.class){
             return routingContext.request();
         }else if (clz == HttpServerResponse.class){
-            return routingContext.response();
+            return routingContext.response()
+                    .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8");
         }else if (clz == Session.class){
             return routingContext.session();
         }else if (clz == Vertx.class){
             return vertx;
+        }else if (clz == WebClient.class){
+            return webClient;
         }
         return null;
     }

@@ -14,6 +14,9 @@ public class RxTest {
         System.out.println(text);
     }
     public static void main(String args[]){
+
+
+
         Observable<Integer>  observable1 = Observable.create(observableEmitter -> {
             log("observable1 onNext ready");
             observableEmitter.onNext(1);
