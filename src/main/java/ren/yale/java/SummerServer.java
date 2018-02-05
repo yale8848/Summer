@@ -55,6 +55,8 @@ public class SummerServer  {
     public static class WebServer extends AbstractVerticle{
         @Override
         public void start() throws Exception {
+
+
             vertx.createHttpServer()
                     .requestHandler(router::accept)
                     .listen(port,host,httpServerAsyncResult -> {

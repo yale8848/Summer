@@ -148,7 +148,7 @@ public class SummerRouter {
     private Object getFromParamArg(RoutingContext routingContext,ArgInfo argInfo){
 
         try {
-            String q = routingContext.request().getParam(argInfo.getQueryParam());
+            String q = routingContext.request().getParam(argInfo.getFormParam());
             if (!StringUtils.isEmpty(q)){
                 return covertType(argInfo.getClazz(),q);
             }
