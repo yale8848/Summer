@@ -33,9 +33,9 @@ public class Hello {
         return "<html><body>bbcc</body></html>";
     }
 
-    @GET
+    @POST
     @Path("/h2")
-    public Test h2(){
+    public Test h2(@QueryParam("test") String test,@FormParam("test1") String test1) {
         return new Test();
     }
 
