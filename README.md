@@ -2,15 +2,27 @@
 
 Summer is a web server which connect JAX-RS and Vertx
 
-# How to use
+## Add to pom
+
+ ```xml
+
+<dependency>
+  <groupId>ren.yale.java</groupId>
+  <artifactId>summer</artifactId>
+  <version>1.0.3</version>
+</dependency>
+
+```
+
+## How to use
 
 ```java
 
-    SummerServer summerServer =SummerServer.create(8080);
+  SummerServer summerServer =SummerServer.create(8080);
 
-    summerServer.getSummerRouter().registerResource(Hello.class);
+  summerServer.getSummerRouter().registerResource(Hello.class);
 
-    summerServer.start();
+  summerServer.start();
 
 ```
 
