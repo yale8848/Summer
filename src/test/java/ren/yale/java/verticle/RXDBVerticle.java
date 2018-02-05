@@ -28,7 +28,7 @@ public class RXDBVerticle extends AbstractVerticle {
     public void start() throws Exception {
         ConfigStoreOptions fileStore = new ConfigStoreOptions()
                 .setType("file")
-                .setConfig(new JsonObject().put("path", "db.json"));
+                .setConfig(new JsonObject().put("path", "dev/db.json"));
 
         ConfigRetrieverOptions options = new ConfigRetrieverOptions()
                 .addStore(fileStore);

@@ -1,0 +1,8 @@
+{
+  "reader":{
+    "url":"jdbc:mysql://rdsejg067u6wc72frg1spublic.mysql.rds.aliyuncs.com/guidancelearn",
+    "driver_class":"com.mysql.jdbc.Driver",
+    "user":"root",
+    "password":"123456"
+  }
+}
