@@ -51,7 +51,7 @@ class MethodsProcessor {
     }
     private static String getProducesValue(Produces produces){
         if (produces==null||produces.value()==null||produces.value().length ==0){
-            return "*/*";
+            return MethodInfo.PRODUCES_TYPE_ALL;
         }
 
         StringBuilder sb = new StringBuilder();

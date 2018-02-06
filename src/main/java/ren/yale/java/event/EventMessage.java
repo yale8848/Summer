@@ -7,6 +7,16 @@ package ren.yale.java.event;
 public class EventMessage {
     private boolean success = false;
     private String message ="";
+    private String key="";
+
+    public String getKey() {
+        return key;
+    }
+
+    public EventMessage setKey(String key) {
+        this.key = key;
+        return this;
+    }
 
     public boolean isSuccess() {
         return success;

@@ -15,15 +15,12 @@ import ren.yale.java.verticle.RedisVerticle;
 public class TestMain {
 
     public static void main(String args[]){
-        SummerServer summerServer =SummerServer.create(8800);
+        SummerServer summerServer =SummerServer.create(8080);
         DeploymentOptions deploymentOptions = new DeploymentOptions();
 
         deploymentOptions.setWorker(true);
         summerServer.getSummerRouter().registerResource(DXHResource.class);
         summerServer.getVertx().deployVerticle(RedisVerticle.class.getName(),deploymentOptions);
-
-
-
         summerServer.start(deploymentOptions);
     }
 }

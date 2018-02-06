@@ -19,6 +19,7 @@ public class SummerServer  {
     private static int port = 8080;
     private static String host="localhost";
 
+
     private SummerServer(String host,int port){
         this.vertx = Vertx.vertx();
         this.router = Router.router(vertx);
@@ -27,6 +28,9 @@ public class SummerServer  {
         this.host = host;
         init();
     }
+
+
+
     private void init(){
         vertx.eventBus().getDelegate().registerDefaultCodec(EventMessage.class, new EventMessageCodec());
     }

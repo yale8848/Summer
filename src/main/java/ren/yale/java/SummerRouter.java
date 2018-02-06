@@ -40,12 +40,23 @@ public class SummerRouter {
     private Router router;
     private Vertx vertx;
     private WebClient webClient;
+    private String contextPath="";
     public SummerRouter(Router router,Vertx vertx){
         this.router = router;
         this.vertx =vertx;
         this.classInfos = new ArrayList<>();
 
         this.init();
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        if (!StringUtils.isEmpty(contextPath)){
+            this.contextPath = contextPath;
+        }
     }
     public Router getRouter() {
         return router;
@@ -80,6 +91,7 @@ public class SummerRouter {
             for (MethodInfo methodInfo:classInfo.getMethodInfoList()) {
                 String p = classInfo.getClassPath()+methodInfo.getMethodPath();
                 p = PathParamConverter.converter(p);
+                p =addContextPath(p);
                 Route route=null;
                 if (methodInfo.getHttpMethod()== null){
                     route = router.route(p);
@@ -106,6 +118,11 @@ public class SummerRouter {
             }
         }
 
+    }
+
+    private String addContextPath(String path) {
+
+        return contextPath+path;
     }
 
     private Object covertType(Class type,String v) throws Exception{
@@ -193,8 +210,7 @@ public class SummerRouter {
         }else if (clz == HttpServerRequest.class){
             return routingContext.request();
         }else if (clz == HttpServerResponse.class){
-            return routingContext.response()
-                    .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8");
+            return routingContext.response();
         }else if (clz == Session.class){
             return routingContext.session();
         }else if (clz == Vertx.class){
@@ -264,12 +280,9 @@ public class SummerRouter {
                 if (handleBefores(routingContext,classInfo,methodInfo)){
                     return;
                 }
-
                 Object[] args = getArgs(routingContext,classInfo,methodInfo);
-
                 routingContext.response().putHeader("Content-Type",methodInfo.getProducesType())
-                .setStatusCode(200);
-
+                        .setStatusCode(200);
                 Object result = methodInfo.getMethod().invoke(classInfo.getClazzObj(),args);
                 if (result!=null&&result.getClass() != Void.class){
                     if (!routingContext.response().ended()){
