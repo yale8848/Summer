@@ -1,5 +1,7 @@
 package ren.yale.java;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ren.yale.java.annotation.Blocking;
 import ren.yale.java.aop.Before;
 import ren.yale.java.interceptor.Interceptor;
@@ -22,6 +24,7 @@ import java.util.List;
  * create at:  2018-01-31 17:25
  **/
 class MethodsProcessor {
+    private final static Logger LOGGER = LogManager.getLogger(MethodsProcessor.class.getName());
 
     private MethodsProcessor() {
     }
@@ -36,7 +39,7 @@ class MethodsProcessor {
                 }
             }
         }catch (Exception e){
-
+            LOGGER.error(e.getMessage());
         }
         return null;
 

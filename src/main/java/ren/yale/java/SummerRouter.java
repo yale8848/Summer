@@ -1,19 +1,23 @@
 package ren.yale.java;
 
+import co.paralleluniverse.fibers.Fiber;
+import co.paralleluniverse.fibers.Suspendable;
 import io.vertx.core.Handler;
-import io.vertx.reactivex.core.Vertx;
-import io.vertx.reactivex.core.http.HttpServerRequest;
-import io.vertx.reactivex.core.http.HttpServerResponse;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.ext.web.Route;
-import io.vertx.reactivex.ext.web.Router;
-import io.vertx.reactivex.ext.web.RoutingContext;
-import io.vertx.reactivex.ext.web.Session;
-import io.vertx.reactivex.ext.web.client.WebClient;
-import io.vertx.reactivex.ext.web.handler.BodyHandler;
-import io.vertx.reactivex.ext.web.handler.CookieHandler;
-import io.vertx.reactivex.ext.web.handler.SessionHandler;
-import io.vertx.reactivex.ext.web.sstore.LocalSessionStore;
+import io.vertx.ext.web.Route;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.Session;
+import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.CookieHandler;
+import io.vertx.ext.web.handler.SessionHandler;
+import io.vertx.ext.web.sstore.LocalSessionStore;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ren.yale.java.interceptor.Interceptor;
 import ren.yale.java.method.ArgInfo;
 import ren.yale.java.method.ClassInfo;
@@ -35,6 +39,7 @@ import java.util.List;
  * create at:  2018-02-01 14:08
  **/
 public class SummerRouter {
+    private final static Logger LOGGER = LogManager.getLogger(SummerRouter.class.getName());
 
     private List<ClassInfo> classInfos;
     private Router router;
@@ -161,7 +166,7 @@ public class SummerRouter {
             }
 
         }catch (Exception e){
-
+            LOGGER.error(e.getMessage());
         }
 
         return null;
@@ -179,7 +184,7 @@ public class SummerRouter {
             }
 
         }catch (Exception e){
-
+            LOGGER.error(e.getMessage());
         }
 
         return null;
@@ -196,7 +201,7 @@ public class SummerRouter {
             }
 
         }catch (Exception e){
-
+            LOGGER.error(e.getMessage());
         }
 
         return null;
@@ -271,42 +276,53 @@ public class SummerRouter {
         }
         return false;
     }
+
     private Handler<RoutingContext> getHandler(ClassInfo classInfo, MethodInfo methodInfo){
 
         return routingContext -> {
 
             try {
 
-                if (handleBefores(routingContext,classInfo,methodInfo)){
-                    return;
-                }
-                Object[] args = getArgs(routingContext,classInfo,methodInfo);
-                routingContext.response().putHeader("Content-Type",methodInfo.getProducesType())
-                        .setStatusCode(200);
-                Object result = methodInfo.getMethod().invoke(classInfo.getClazzObj(),args);
-                if (result!=null&&result.getClass() != Void.class){
-                    if (!routingContext.response().ended()){
-                        if (result instanceof  String){
-                            routingContext.response().end((String) result);
-                        }else{
-                            if (methodInfo.getProducesType().indexOf(MediaType.TEXT_XML)>=0||
-                                    methodInfo.getProducesType().indexOf(MediaType.APPLICATION_XML)>=0 ){
-                                routingContext.response().end(convert2XML(result));
-                            }else{
-                                routingContext.response()
-                                        .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8").end(JsonObject.mapFrom(result).encodePrettily());
+                new Fiber(()->{
+
+                    if (handleBefores(routingContext,classInfo,methodInfo)){
+                        return;
+                    }
+                    Object[] args = getArgs(routingContext,classInfo,methodInfo);
+                    routingContext.response().putHeader("Content-Type",methodInfo.getProducesType())
+                            .setStatusCode(200);
+
+                    try {
+                        Object result = methodInfo.getMethod().invoke(classInfo.getClazzObj(),args);
+                        if (result!=null&&result.getClass() != Void.class){
+                            if (!routingContext.response().ended()){
+                                if (result instanceof  String){
+                                    routingContext.response().end((String) result);
+                                }else{
+                                    if (methodInfo.getProducesType().indexOf(MediaType.TEXT_XML)>=0||
+                                            methodInfo.getProducesType().indexOf(MediaType.APPLICATION_XML)>=0 ){
+                                        routingContext.response().end(convert2XML(result));
+                                    }else{
+                                        routingContext.response()
+                                                .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8").end(JsonObject.mapFrom(result).encodePrettily());
+                                    }
+                                }
                             }
                         }
+                    }catch (Exception e){
+                        LOGGER.error(e.getMessage());
+                        routingContext.response().setStatusCode(500).putHeader("Content-Type", MediaType.TEXT_PLAIN+";charset=utf-8")
+                                .end(e.toString());
                     }
-                }
+
+                }).start();
+
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage());
                 routingContext.response().setStatusCode(500).putHeader("Content-Type", MediaType.TEXT_PLAIN+";charset=utf-8")
                         .end(e.toString());
             }
-
-
         };
     }
 }

@@ -1,17 +1,19 @@
 package ren.yale.java.controller;
 
-import io.vertx.reactivex.core.Vertx;
-import io.vertx.reactivex.core.http.HttpServerResponse;
-import io.vertx.reactivex.ext.web.client.WebClient;
-import io.vertx.reactivex.ext.web.codec.BodyCodec;
-import ren.yale.java.SummerResponse;
-import ren.yale.java.bean.BookIndexBook;
-import ren.yale.java.utils.HttpUtils;
+import co.paralleluniverse.fibers.Suspendable;
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.http.HttpServerResponse;
+import ren.yale.java.event.EventMessage;
+
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
+
+import static io.vertx.ext.sync.Sync.awaitResult;
 
 /**
  * Yale
@@ -26,8 +28,31 @@ public class DXHResource {
     public void dxh(@PathParam("dxhv") String dxh, @Context Vertx vertx,
                     @Context HttpServerResponse response){
         dxh="8454005";
-        WebClient client = WebClient.create(vertx);
-        HttpUtils.oneDXH(client,response,dxh,vertx);
+        //WebClient client = WebClient.create(vertx);
+        //HttpUtils.oneDXH(client,response,dxh,vertx);
+        //response.end(dxh);
+
+
+  /*      try {
+            EventBus eb = vertx.eventBus();
+            EventMessage eventMessage=EventMessage.message(null);
+            eventMessage.setKey("68257");
+            Message<EventMessage> reply = awaitResult(h -> eb.send("aaa", eventMessage, h));
+
+            //Message<EventMessage> reply1 = awaitResult(h -> eb.send("aaa", eventMessage, h));
+            response.end(reply.body().getMessage());
+        }catch (Exception e){
+            response.end(e.getMessage());
+        }*/
+
+        EventBus eb = vertx.eventBus();
+        EventMessage eventMessage=EventMessage.message(null);
+        eventMessage.setKey("68257");
+        Message<EventMessage> reply = awaitResult(h -> eb.send("aaa", eventMessage, h));
+
+        Message<EventMessage> reply1 = awaitResult(h -> eb.send("aaa", eventMessage, h));
+        response.end(reply.body().getMessage());
+
 
     }
 

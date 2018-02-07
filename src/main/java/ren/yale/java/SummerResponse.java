@@ -2,7 +2,6 @@ package ren.yale.java;
 
 import io.vertx.core.json.JsonObject;
 
-import javax.ws.rs.core.Response;
 
 /**
  * Yale

@@ -4,7 +4,7 @@
 
   <groupId>ren.yale.java</groupId>
   <artifactId>summer</artifactId>
-  <version>1.0.9</version>
+  <version>1.1.2</version>
   <packaging>jar</packaging>
 
 
@@ -73,11 +73,11 @@
       <version>${vertx.version}</version>
     </dependency>
 
-    <dependency>
+<!--    <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-rx-java2</artifactId>
       <version>${vertx.version}</version>
-    </dependency>
+    </dependency>-->
 
     <dependency>
       <groupId>io.vertx</groupId>
@@ -89,6 +89,13 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-redis-client</artifactId>
+      <version>${vertx.version}</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-sync</artifactId>
       <version>${vertx.version}</version>
     </dependency>
 
