@@ -1,17 +1,11 @@
 package ren.yale.java;
 
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
-import io.vertx.ext.sync.SyncVerticle;
+import io.vertx.core.*;
 import io.vertx.ext.web.Router;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ren.yale.java.event.EventMessage;
 import ren.yale.java.event.EventMessageCodec;
-
-import static io.vertx.ext.sync.Sync.fiberHandler;
 
 /**
  * Yale
@@ -84,8 +78,7 @@ public class SummerServer  {
 
         vertx.deployVerticle(WebServer.class.getName(),options);
     }
-
-    public static class WebServer extends SyncVerticle{
+    public static class WebServer extends AbstractVerticle {
 
 
         @Override

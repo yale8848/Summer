@@ -1,7 +1,5 @@
 package ren.yale.java;
 
-import co.paralleluniverse.fibers.Fiber;
-import co.paralleluniverse.fibers.Suspendable;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerRequest;
@@ -283,7 +281,6 @@ public class SummerRouter {
 
             try {
 
-                new Fiber(()->{
 
                     if (handleBefores(routingContext,classInfo,methodInfo)){
                         return;
@@ -314,10 +311,6 @@ public class SummerRouter {
                         routingContext.response().setStatusCode(500).putHeader("Content-Type", MediaType.TEXT_PLAIN+";charset=utf-8")
                                 .end(e.toString());
                     }
-
-                }).start();
-
-
             } catch (Exception e) {
                 LOGGER.error(e.getMessage());
                 routingContext.response().setStatusCode(500).putHeader("Content-Type", MediaType.TEXT_PLAIN+";charset=utf-8")
