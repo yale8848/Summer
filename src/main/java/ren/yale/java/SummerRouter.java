@@ -9,7 +9,6 @@ import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
-import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CookieHandler;
 import io.vertx.ext.web.handler.SessionHandler;
@@ -42,7 +41,6 @@ public class SummerRouter {
     private List<ClassInfo> classInfos;
     private Router router;
     private Vertx vertx;
-    private WebClient webClient;
     private String contextPath="";
     public SummerRouter(Router router,Vertx vertx){
         this.router = router;
@@ -70,7 +68,6 @@ public class SummerRouter {
         SessionHandler handler = SessionHandler.create(LocalSessionStore.create(vertx));
         handler.setNagHttps(true);
         router.route().handler(handler);
-        webClient = WebClient.create(vertx);
     }
     private boolean isRegister(Class clazz){
 
@@ -218,8 +215,6 @@ public class SummerRouter {
             return routingContext.session();
         }else if (clz == Vertx.class){
             return vertx;
-        }else if (clz == WebClient.class){
-            return webClient;
         }
         return null;
     }

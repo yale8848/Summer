@@ -25,6 +25,6 @@ public class TestService {
 
        // routingContext.response().end(SummerResponse.ok().setResult(reply.body().getMessage()).jsonPretty());
 
-        return SummerResponse.fail().setMessage("bbb");
+        return SummerResponse.fail().message("bbb");
     }
 }

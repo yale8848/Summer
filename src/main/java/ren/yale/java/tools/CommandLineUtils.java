@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 public class CommandLineUtils {
     private final static Logger LOGGER = LogManager.getLogger(CommandLineUtils.class.getName());
     private String[]args;
-    private  CommandLineParser parser = new PosixParser();
+    private  CommandLineParser parser =null;
     private CommandLine cmd = null;
     private final Options options = new Options();
     public CommandLineUtils(String []args){
@@ -22,8 +22,33 @@ public class CommandLineUtils {
         options.addOption(option).addOption(option);
         return this;
     }
-    public CommandLineUtils parse(){
+
+    //array parameters : [-a,av,-b,bv]
+    public CommandLineUtils basicParse(){
         try {
+            parser = new BasicParser();
+            cmd = parser.parse(options, args);
+        } catch (final ParseException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return this;
+    }
+    //Posix style parameters : -a av -b bv
+    public CommandLineUtils posixParse(){
+        try {
+            parser = new PosixParser();
+            cmd = parser.parse(options, args);
+        } catch (final ParseException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return this;
+    }
+    //GNU style parameters : --a=av --b=bv
+    public CommandLineUtils gnuParse(){
+        try {
+            parser = new GnuParser();
             cmd = parser.parse(options, args);
         } catch (final ParseException e) {
             LOGGER.error(e.getMessage());
