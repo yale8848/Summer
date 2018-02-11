@@ -1,7 +1,5 @@
 package ren.yale.java.interceptor;
 
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
 /**

@@ -2,6 +2,7 @@ package ren.yale.java.method;
 
 import ren.yale.java.interceptor.Interceptor;
 
+import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +14,12 @@ import java.util.List;
  **/
 public class MethodInfo {
 
+    public static final String PRODUCES_TYPE_ALL= MediaType.APPLICATION_JSON+";charset=utf-8";
     private Class httpMethod;
 
     private String methodPath;
 
-    private String producesType="*/*";
+    private String producesType=PRODUCES_TYPE_ALL;
 
     private Method method;
     private List<ArgInfo> argInfoList = new ArrayList<>();

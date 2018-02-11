@@ -9,7 +9,7 @@ Summer is a web server which connect JAX-RS and Vertx
 <dependency>
   <groupId>ren.yale.java</groupId>
   <artifactId>summer</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.9</version>
 </dependency>
 
 ```

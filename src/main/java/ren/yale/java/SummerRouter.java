@@ -1,19 +1,20 @@
 package ren.yale.java;
 
 import io.vertx.core.Handler;
-import io.vertx.reactivex.core.Vertx;
-import io.vertx.reactivex.core.http.HttpServerRequest;
-import io.vertx.reactivex.core.http.HttpServerResponse;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.ext.web.Route;
-import io.vertx.reactivex.ext.web.Router;
-import io.vertx.reactivex.ext.web.RoutingContext;
-import io.vertx.reactivex.ext.web.Session;
-import io.vertx.reactivex.ext.web.client.WebClient;
-import io.vertx.reactivex.ext.web.handler.BodyHandler;
-import io.vertx.reactivex.ext.web.handler.CookieHandler;
-import io.vertx.reactivex.ext.web.handler.SessionHandler;
-import io.vertx.reactivex.ext.web.sstore.LocalSessionStore;
+import io.vertx.ext.web.Route;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.Session;
+import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.CookieHandler;
+import io.vertx.ext.web.handler.SessionHandler;
+import io.vertx.ext.web.sstore.LocalSessionStore;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ren.yale.java.interceptor.Interceptor;
 import ren.yale.java.method.ArgInfo;
 import ren.yale.java.method.ClassInfo;
@@ -35,17 +36,28 @@ import java.util.List;
  * create at:  2018-02-01 14:08
  **/
 public class SummerRouter {
+    private final static Logger LOGGER = LogManager.getLogger(SummerRouter.class.getName());
 
     private List<ClassInfo> classInfos;
     private Router router;
     private Vertx vertx;
-    private WebClient webClient;
+    private String contextPath="";
     public SummerRouter(Router router,Vertx vertx){
         this.router = router;
         this.vertx =vertx;
         this.classInfos = new ArrayList<>();
 
         this.init();
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        if (!StringUtils.isEmpty(contextPath)){
+            this.contextPath = contextPath;
+        }
     }
     public Router getRouter() {
         return router;
@@ -56,7 +68,6 @@ public class SummerRouter {
         SessionHandler handler = SessionHandler.create(LocalSessionStore.create(vertx));
         handler.setNagHttps(true);
         router.route().handler(handler);
-        webClient = WebClient.create(vertx);
     }
     private boolean isRegister(Class clazz){
 
@@ -80,6 +91,7 @@ public class SummerRouter {
             for (MethodInfo methodInfo:classInfo.getMethodInfoList()) {
                 String p = classInfo.getClassPath()+methodInfo.getMethodPath();
                 p = PathParamConverter.converter(p);
+                p =addContextPath(p);
                 Route route=null;
                 if (methodInfo.getHttpMethod()== null){
                     route = router.route(p);
@@ -106,6 +118,11 @@ public class SummerRouter {
             }
         }
 
+    }
+
+    private String addContextPath(String path) {
+
+        return contextPath+path;
     }
 
     private Object covertType(Class type,String v) throws Exception{
@@ -144,7 +161,7 @@ public class SummerRouter {
             }
 
         }catch (Exception e){
-
+            LOGGER.error(e.getMessage());
         }
 
         return null;
@@ -162,7 +179,7 @@ public class SummerRouter {
             }
 
         }catch (Exception e){
-
+            LOGGER.error(e.getMessage());
         }
 
         return null;
@@ -179,7 +196,7 @@ public class SummerRouter {
             }
 
         }catch (Exception e){
-
+            LOGGER.error(e.getMessage());
         }
 
         return null;
@@ -193,14 +210,11 @@ public class SummerRouter {
         }else if (clz == HttpServerRequest.class){
             return routingContext.request();
         }else if (clz == HttpServerResponse.class){
-            return routingContext.response()
-                    .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8");
+            return routingContext.response();
         }else if (clz == Session.class){
             return routingContext.session();
         }else if (clz == Vertx.class){
             return vertx;
-        }else if (clz == WebClient.class){
-            return webClient;
         }
         return null;
     }
@@ -255,45 +269,48 @@ public class SummerRouter {
         }
         return false;
     }
+
     private Handler<RoutingContext> getHandler(ClassInfo classInfo, MethodInfo methodInfo){
 
         return routingContext -> {
 
             try {
 
-                if (handleBefores(routingContext,classInfo,methodInfo)){
-                    return;
-                }
 
-                Object[] args = getArgs(routingContext,classInfo,methodInfo);
+                    if (handleBefores(routingContext,classInfo,methodInfo)){
+                        return;
+                    }
+                    Object[] args = getArgs(routingContext,classInfo,methodInfo);
+                    routingContext.response().putHeader("Content-Type",methodInfo.getProducesType())
+                            .setStatusCode(200);
 
-                routingContext.response().putHeader("Content-Type",methodInfo.getProducesType())
-                .setStatusCode(200);
-
-                Object result = methodInfo.getMethod().invoke(classInfo.getClazzObj(),args);
-                if (result!=null&&result.getClass() != Void.class){
-                    if (!routingContext.response().ended()){
-                        if (result instanceof  String){
-                            routingContext.response().end((String) result);
-                        }else{
-                            if (methodInfo.getProducesType().indexOf(MediaType.TEXT_XML)>=0||
-                                    methodInfo.getProducesType().indexOf(MediaType.APPLICATION_XML)>=0 ){
-                                routingContext.response().end(convert2XML(result));
-                            }else{
-                                routingContext.response()
-                                        .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8").end(JsonObject.mapFrom(result).encodePrettily());
+                    try {
+                        Object result = methodInfo.getMethod().invoke(classInfo.getClazzObj(),args);
+                        if (result!=null&&result.getClass() != Void.class){
+                            if (!routingContext.response().ended()){
+                                if (result instanceof  String){
+                                    routingContext.response().end((String) result);
+                                }else{
+                                    if (methodInfo.getProducesType().indexOf(MediaType.TEXT_XML)>=0||
+                                            methodInfo.getProducesType().indexOf(MediaType.APPLICATION_XML)>=0 ){
+                                        routingContext.response().end(convert2XML(result));
+                                    }else{
+                                        routingContext.response()
+                                                .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8").end(JsonObject.mapFrom(result).encodePrettily());
+                                    }
+                                }
                             }
                         }
+                    }catch (Exception e){
+                        LOGGER.error(e.getMessage());
+                        routingContext.response().setStatusCode(500).putHeader("Content-Type", MediaType.TEXT_PLAIN+";charset=utf-8")
+                                .end(e.toString());
                     }
-                }
-
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage());
                 routingContext.response().setStatusCode(500).putHeader("Content-Type", MediaType.TEXT_PLAIN+";charset=utf-8")
                         .end(e.toString());
             }
-
-
         };
     }
 }

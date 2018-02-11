@@ -4,7 +4,7 @@
 
   <groupId>ren.yale.java</groupId>
   <artifactId>summer</artifactId>
-  <version>1.0.5</version>
+  <version>1.1.6</version>
   <packaging>jar</packaging>
 
 
@@ -65,24 +65,27 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-jdbc-client</artifactId>
       <version>${vertx.version}</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-config</artifactId>
       <version>${vertx.version}</version>
+      <scope>test</scope>
     </dependency>
 
-    <dependency>
+<!--    <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-rx-java2</artifactId>
       <version>${vertx.version}</version>
-    </dependency>
+    </dependency>-->
 
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web-client</artifactId>
       <version>${vertx.version}</version>
+      <scope>test</scope>
     </dependency>
 
 
@@ -90,7 +93,15 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-redis-client</artifactId>
       <version>${vertx.version}</version>
+      <scope>test</scope>
     </dependency>
+
+
+<!--    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-sync</artifactId>
+      <version>${vertx.version}</version>
+    </dependency>-->
 
     <dependency>
       <groupId>javax.ws.rs</groupId>
@@ -110,6 +121,14 @@
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.33</version>
+      <scope>test</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.2</version>
     </dependency>
 
     <dependency>

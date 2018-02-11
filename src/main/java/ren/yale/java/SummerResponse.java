@@ -2,7 +2,6 @@ package ren.yale.java;
 
 import io.vertx.core.json.JsonObject;
 
-import javax.ws.rs.core.Response;
 
 /**
  * Yale
@@ -28,7 +27,7 @@ public class SummerResponse  {
         return message;
     }
 
-    public SummerResponse setMessage(String message) {
+    public SummerResponse message(String message) {
         this.message = message;
         return this;
     }
@@ -37,7 +36,7 @@ public class SummerResponse  {
         return success;
     }
 
-    public SummerResponse setSuccess(boolean success) {
+    public SummerResponse success(boolean success) {
         this.success = success;
         return this;
     }
@@ -46,7 +45,7 @@ public class SummerResponse  {
         return result;
     }
 
-    public SummerResponse setResult(Object result) {
+    public SummerResponse result(Object result) {
         this.result = result;
         return this;
     }
@@ -58,19 +57,15 @@ public class SummerResponse  {
     }
 
     public static SummerResponse ok(){
-
-        SummerResponse summerResponse = new SummerResponse();
-        summerResponse.setSuccess(true);
-        summerResponse.setResult(null);
-        return summerResponse;
+        return ok(null);
     }
     public static SummerResponse ok(Object result){
 
         SummerResponse summerResponse = new SummerResponse();
 
-        summerResponse.setSuccess(true);
+        summerResponse.success(true);
         if (result!=null){
-            summerResponse.setResult(result);
+            summerResponse.result(result);
         }
         return summerResponse;
     }
@@ -78,17 +73,13 @@ public class SummerResponse  {
 
         SummerResponse summerResponse = new SummerResponse();
 
-        summerResponse.setSuccess(false);
+        summerResponse.success(false);
         if (message!=null){
-            summerResponse.setMessage(message);
+            summerResponse.message(message);
         }
         return summerResponse;
     }
     public static SummerResponse fail(){
-
-        SummerResponse summerResponse = new SummerResponse();
-        summerResponse.setSuccess(false);
-        summerResponse.setMessage(null);
-        return summerResponse;
+        return fail(null);
     }
 }

@@ -1,6 +1,7 @@
 package ren.yale.java.controller;
 
-import io.vertx.reactivex.core.Vertx;
+import io.vertx.core.Vertx;
+import io.vertx.core.Vertx;
 import ren.yale.java.bean.UserInfo;
 import ren.yale.java.event.EventMessage;
 
@@ -21,9 +22,7 @@ public class UserInfoResource {
         userInfo.setName("aaa");
         userInfo.setPassword("bbb");
 
-        vertx.eventBus().rxSend("login", EventMessage.message(userInfo)).subscribe(objectMessage -> {
 
-        });
 
 
     }
