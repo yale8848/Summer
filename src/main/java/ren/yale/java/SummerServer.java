@@ -1,6 +1,7 @@
 package ren.yale.java;
 
 import io.vertx.core.*;
+import io.vertx.ext.sync.SyncVerticle;
 import io.vertx.ext.web.Router;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -78,11 +79,15 @@ public class SummerServer  {
 
         vertx.deployVerticle(WebServer.class.getName(),options);
     }
-    public static class WebServer extends AbstractVerticle {
+    public static class WebServer extends SyncVerticle {
 
         @Override
         public void start() throws Exception {
-
+            vertx.eventBus().consumer("aaa").handler(objectMessage -> {
+                EventMessage eventMessage= (EventMessage) objectMessage.body();
+                eventMessage.setMessage("hello aaa");
+                objectMessage.reply(eventMessage);
+            });
             vertx.createHttpServer()
                     .requestHandler(router::accept)
                     .listen(port,host,httpServerAsyncResult -> {

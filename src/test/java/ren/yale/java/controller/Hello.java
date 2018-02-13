@@ -1,16 +1,20 @@
 package ren.yale.java.controller;
 
+import co.paralleluniverse.fibers.Suspendable;
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.ext.sync.Sync;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import ren.yale.java.SummerResponse;
 import ren.yale.java.aop.Before;
 import ren.yale.java.bean.Test;
 import ren.yale.java.bean.UserInfo;
+import ren.yale.java.event.EventMessage;
 import ren.yale.java.test.TestInterceptor;
 
 import javax.ws.rs.*;
@@ -48,10 +52,12 @@ public class Hello {
     @GET
     @Path("/h3")
     public void h3(@Context HttpServerResponse response, @Context Vertx vertx){
-        response.end("<html><body>bb</body></html>");
-        UserInfo u = new UserInfo();
-        u.setName("bbb");
-        u.setPassword("ccc");
+
+        Message<EventMessage> messageMessage = Sync.awaitResult(h->{
+            vertx.eventBus().send("aaa",h);
+        });
+        response.end("<html><body>"+messageMessage.body().getMessage()+"</body></html>");
+
     }
 
     @GET
