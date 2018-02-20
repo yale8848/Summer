@@ -4,7 +4,7 @@
 
   <groupId>ren.yale.java</groupId>
   <artifactId>summer</artifactId>
-  <version>1.1.6</version>
+  <version>1.1.7</version>
   <packaging>jar</packaging>
 
 
@@ -65,7 +65,6 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-jdbc-client</artifactId>
       <version>${vertx.version}</version>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -100,6 +99,14 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-sync</artifactId>
+      <version>${vertx.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-jdbc-client</artifactId>
       <version>${vertx.version}</version>
     </dependency>
 

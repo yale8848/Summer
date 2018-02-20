@@ -1,6 +1,6 @@
 # Summer
 
-Summer is a web server which connect JAX-RS and Vertx
+Vertx router with JAX-RS
 
 ## Add to pom
 
@@ -9,7 +9,7 @@ Summer is a web server which connect JAX-RS and Vertx
 <dependency>
   <groupId>ren.yale.java</groupId>
   <artifactId>summer</artifactId>
-  <version>1.1.6</version>
+  <version>1.1.7</version>
 </dependency>
 
 ```
@@ -26,7 +26,7 @@ Summer is a web server which connect JAX-RS and Vertx
 
 ```
 
-hello.java
+Hello.java
 
 ```java
 
@@ -138,6 +138,50 @@ By default each method will return Object will return json
 
 ```
 this will return Test json object
+
+## SQL builder
+
+[same as mybatis3 sqlbuilder](http://www.mybatis.org/mybatis-3/statement-builders.html)
+
+```java
+// With conditionals (note the final parameters, required for the anonymous inner class to access them)
+public String selectPersonLike(final String id, final String firstName, final String lastName) {
+  return new SQL() {{
+    SELECT("P.ID, P.USERNAME, P.PASSWORD, P.FIRST_NAME, P.LAST_NAME");
+    FROM("PERSON P");
+    if (id != null) {
+      WHERE("P.ID like #{id}");
+    }
+    if (firstName != null) {
+      WHERE("P.FIRST_NAME like #{firstName}");
+    }
+    if (lastName != null) {
+      WHERE("P.LAST_NAME like #{lastName}");
+    }
+    ORDER_BY("P.LAST_NAME");
+  }}.toString();
+}
+
+
+```
+
+## SQL ResultMapper
+
+```java
+
+   sqlConnection.query(new SummerSQL().SELECT("*")
+                                .FROM("db_test.tb_test").toString(), resultSetAsyncResult -> {
+                            if (resultSetAsyncResult.succeeded()){
+
+                               List<DBTest> tests =  ResultSetMapper.create().camelName()
+                                        .mapperList(resultSetAsyncResult.result(), DBTest.class);
+                            }
+                            sqlConnection.close();
+                 });
+
+
+```
+
 
 ## License
 
