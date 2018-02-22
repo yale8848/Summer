@@ -30,3 +30,5 @@ logs
 target
 file-uploads
 
+src/test/resources/dev/dbt.json
+

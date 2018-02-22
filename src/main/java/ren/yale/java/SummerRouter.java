@@ -27,6 +27,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -270,48 +271,51 @@ public class SummerRouter {
         return false;
     }
 
+    private void handlers(ClassInfo classInfo, MethodInfo methodInfo,RoutingContext routingContext){
+        if (handleBefores(routingContext,classInfo,methodInfo)){
+            return;
+        }
+        Object[] args = getArgs(routingContext,classInfo,methodInfo);
+        routingContext.response().putHeader("Content-Type",methodInfo.getProducesType())
+                .setStatusCode(200);
+
+        try {
+            Object result = methodInfo.getMethod().invoke(classInfo.getClazzObj(),args);
+            if (result!=null&&result.getClass() != Void.class){
+                if (!routingContext.response().ended()){
+                    if (result instanceof  String){
+                        routingContext.response().end((String) result);
+                    }else{
+                        if (methodInfo.getProducesType().indexOf(MediaType.TEXT_XML)>=0||
+                                methodInfo.getProducesType().indexOf(MediaType.APPLICATION_XML)>=0 ){
+                            routingContext.response().end(convert2XML(result));
+                        }else{
+                            routingContext.response()
+                                    .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8").end(JsonObject.mapFrom(result).encodePrettily());
+                        }
+                    }
+                }
+            }
+        }catch (Exception e){
+            LOGGER.error(e.toString());
+            routingContext.response().setStatusCode(500).putHeader("Content-Type", MediaType.TEXT_PLAIN+";charset=utf-8")
+                    .end(e.toString());
+        }
+    }
     private Handler<RoutingContext> getHandler(ClassInfo classInfo, MethodInfo methodInfo){
 
-        return routingContext -> {
+        return (routingContext -> {
 
             try {
 
+                handlers(classInfo,methodInfo,routingContext);
 
-                    if (handleBefores(routingContext,classInfo,methodInfo)){
-                        return;
-                    }
-                    Object[] args = getArgs(routingContext,classInfo,methodInfo);
-                    routingContext.response().putHeader("Content-Type",methodInfo.getProducesType())
-                            .setStatusCode(200);
-
-                    try {
-                        Object result = methodInfo.getMethod().invoke(classInfo.getClazzObj(),args);
-                        if (result!=null&&result.getClass() != Void.class){
-                            if (!routingContext.response().ended()){
-                                if (result instanceof  String){
-                                    routingContext.response().end((String) result);
-                                }else{
-                                    if (methodInfo.getProducesType().indexOf(MediaType.TEXT_XML)>=0||
-                                            methodInfo.getProducesType().indexOf(MediaType.APPLICATION_XML)>=0 ){
-                                        routingContext.response().end(convert2XML(result));
-                                    }else{
-                                        routingContext.response()
-                                                .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8").end(JsonObject.mapFrom(result).encodePrettily());
-                                    }
-                                }
-                            }
-                        }
-                    }catch (Exception e){
-                        LOGGER.error(e.getMessage());
-                        routingContext.response().setStatusCode(500).putHeader("Content-Type", MediaType.TEXT_PLAIN+";charset=utf-8")
-                                .end(e.toString());
-                    }
             } catch (Exception e) {
                 LOGGER.error(e.getMessage());
                 routingContext.response().setStatusCode(500).putHeader("Content-Type", MediaType.TEXT_PLAIN+";charset=utf-8")
                         .end(e.toString());
             }
-        };
+        });
     }
 }
 

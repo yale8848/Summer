@@ -1,6 +1,6 @@
 {
   "reader":{
-    "url":"jdbc:mysql://rdsejg067u6wc72frg1spublic.mysql.rds.aliyuncs.com/guidancelearn",
+    "url":"",
     "driver_class":"com.mysql.jdbc.Driver",
     "user":"1`11",
     "password":"111"

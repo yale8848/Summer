@@ -1,6 +1,10 @@
 package ren.yale.java;
 
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.VertxOptions;
+import ren.yale.java.controller.DXHResource;
+import ren.yale.java.controller.Hello;
+import ren.yale.java.verticle.RXDBVerticle;
 
 /**
  * Yale
@@ -9,17 +13,21 @@ import io.vertx.core.DeploymentOptions;
 public class TestMain {
 
     public static void main(String args[]){
-        SummerServer summerServer =SummerServer.create(8080);
+
+        VertxOptions options = new VertxOptions();
+        options.setBlockedThreadCheckInterval(20000);
+        options.setMaxEventLoopExecuteTime(20000);
+        SummerServer summerServer =SummerServer.create("localhost",8080,options);
+
         DeploymentOptions deploymentOptions = new DeploymentOptions();
 
         deploymentOptions.setWorker(true);
-        //summerServer.getSummerRouter().registerResource(DXHResource.class);
-        //summerServer.getVertx().deployVerticle(RedisVerticle.class.getName(),deploymentOptions);
-       // summerServer.getVertx().deployVerticle(DB2Verticle.class.getName());
+        summerServer.getSummerRouter().registerResource(Hello.class);
+         summerServer.getVertx().deployVerticle(RXDBVerticle.class.getName());
 
-        //summerServer.getVertx().
-       //         deployVerticle(WebServer.class.getName());
-        //summerServer.start();
+        summerServer.getVertx().
+                deployVerticle(SummerServer.WebServer.class.getName());
+        summerServer.start();
     }
 
 
