@@ -141,12 +141,12 @@ this will return Test json object
 
 ## SQL builder
 
-[same as mybatis3 sqlbuilder](http://www.mybatis.org/mybatis-3/statement-builders.html)
+SummerSQL [same as mybatis3 sqlbuilder](http://www.mybatis.org/mybatis-3/statement-builders.html)
 
 ```java
 // With conditionals (note the final parameters, required for the anonymous inner class to access them)
 public String selectPersonLike(final String id, final String firstName, final String lastName) {
-  return new SQL() {{
+  return new SummerSQL() {{
     SELECT("P.ID, P.USERNAME, P.PASSWORD, P.FIRST_NAME, P.LAST_NAME");
     FROM("PERSON P");
     if (id != null) {
