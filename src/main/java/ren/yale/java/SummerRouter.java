@@ -1,12 +1,10 @@
 package ren.yale.java;
 
-import co.paralleluniverse.fibers.Fiber;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.sync.Sync;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -310,9 +308,7 @@ public class SummerRouter {
 
             try {
 
-                new Fiber<Void>(Sync.getContextScheduler(), () -> {
-                    handlers(classInfo,methodInfo,routingContext);
-                }).start();
+                handlers(classInfo,methodInfo,routingContext);
 
             } catch (Exception e) {
                 LOGGER.error(e.getMessage());
