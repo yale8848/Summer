@@ -16,6 +16,15 @@ public class ClassInfo {
 
     private Class clazz;
     private Interceptor[] befores;
+    private Interceptor[] afters;
+
+    public Interceptor[] getAfters() {
+        return afters;
+    }
+
+    public void setAfters(Interceptor[] afters) {
+        this.afters = afters;
+    }
 
     private List<MethodInfo> methodInfoList = new ArrayList<>();
 

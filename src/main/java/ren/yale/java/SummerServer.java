@@ -82,11 +82,6 @@ public class SummerServer  {
 
         @Override
         public void start() throws Exception {
-            vertx.eventBus().consumer("aaa").handler(objectMessage -> {
-                EventMessage eventMessage= (EventMessage) objectMessage.body();
-                eventMessage.setMessage("hello aaa");
-                objectMessage.reply(eventMessage);
-            });
             vertx.createHttpServer()
                     .requestHandler(router::accept)
                     .listen(port,host,httpServerAsyncResult -> {

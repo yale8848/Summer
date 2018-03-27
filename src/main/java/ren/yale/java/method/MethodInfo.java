@@ -25,6 +25,16 @@ public class MethodInfo {
     private List<ArgInfo> argInfoList = new ArrayList<>();
     private Interceptor[] befores;
 
+    private Interceptor[] afters;
+
+    public Interceptor[] getAfters() {
+        return afters;
+    }
+
+    public void setAfters(Interceptor[] afters) {
+        this.afters = afters;
+    }
+
     private boolean isBlocking;
     public boolean isBlocking() {
         return isBlocking;

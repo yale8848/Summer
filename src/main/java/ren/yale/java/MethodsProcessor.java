@@ -3,6 +3,7 @@ package ren.yale.java;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ren.yale.java.annotation.Blocking;
+import ren.yale.java.aop.After;
 import ren.yale.java.aop.Before;
 import ren.yale.java.interceptor.Interceptor;
 import ren.yale.java.method.ArgInfo;
@@ -92,6 +93,12 @@ class MethodsProcessor {
         }
         return null;
     }
+    private static Interceptor[] getAfters(After after){
+        if (after!=null&&after.value()!=null&&after.value().length>0){
+            return getIntercepter(after.value());
+        }
+        return null;
+    }
     public static void get(List<ClassInfo> classInfos, Class clazz) {
 
 
@@ -106,13 +113,16 @@ class MethodsProcessor {
         classInfo.setClazzObj(newClass(clazz));
         classInfo.setClazz(clazz);
 
-        Interceptor[] interceptorsClazzBefore =
+        Interceptor[] interceptorsClazz =
                 getBefores((Before) clazz.getAnnotation(Before.class));
-        if (interceptorsClazzBefore!=null){
-            classInfo.setBefores(interceptorsClazzBefore);
+        if (interceptorsClazz!=null){
+            classInfo.setBefores(interceptorsClazz);
         }
-
-
+        interceptorsClazz =
+                getAfters((After) clazz.getAnnotation(After.class));
+        if (interceptorsClazz!=null){
+            classInfo.setAfters(interceptorsClazz);
+        }
         for (Method method : clazz.getMethods()) {
             Class mt = method.getDeclaringClass();
             if ( mt ==  Object.class){
@@ -121,12 +131,17 @@ class MethodsProcessor {
             MethodInfo methodInfo = new MethodInfo();
 
 
-            Interceptor[] interceptorsMethodBefore =
+            Interceptor[] interceptorsMethod =
                     getBefores((Before) method.getAnnotation(Before.class));
-            if (interceptorsMethodBefore!=null){
-                methodInfo.setBefores(interceptorsMethodBefore);
+            if (interceptorsMethod!=null){
+                methodInfo.setBefores(interceptorsMethod);
             }
 
+            interceptorsMethod =
+                    getAfters((After) method.getAnnotation(After.class));
+            if (interceptorsMethod!=null){
+                methodInfo.setAfters(interceptorsMethod);
+            }
 
             Blocking blocking = method.getAnnotation(Blocking.class);
             if (blocking!=null){
