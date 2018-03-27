@@ -29,6 +29,7 @@ import javax.xml.bind.Marshaller;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -255,22 +256,38 @@ public class SummerRouter {
     }
 
     private boolean handleBefores(RoutingContext routingContext,ClassInfo classInfo, MethodInfo methodInfo){
-        Interceptor [] befores = methodInfo.getBefores();
-        if (befores==null){
-            befores = classInfo.getBefores();
-        }
-        if (befores==null){
-            return false;
-        }
+        List<Interceptor> beforeList = new ArrayList<>();
 
-        for (Interceptor inter:befores) {
-            if (inter.handle(routingContext)){
+        if (methodInfo.getBefores()!=null){
+            beforeList.addAll(Arrays.asList(methodInfo.getBefores()));
+        }
+        if (classInfo.getBefores()!=null){
+            beforeList.addAll(Arrays.asList(classInfo.getBefores()));
+        }
+        for (Interceptor inter:beforeList) {
+            if (inter.handle(routingContext,null)){
                 return true;
             }
         }
         return false;
     }
+    private boolean handleAfters(RoutingContext routingContext,ClassInfo classInfo, MethodInfo methodInfo
+    ,Object obj){
+        List<Interceptor> list = new ArrayList<>();
 
+        if (methodInfo.getAfters()!=null){
+            list.addAll(Arrays.asList(methodInfo.getAfters()));
+        }
+        if (classInfo.getAfters()!=null){
+            list.addAll(Arrays.asList(classInfo.getAfters()));
+        }
+        for (Interceptor inter:list) {
+            if (inter.handle(routingContext,obj)){
+                return true;
+            }
+        }
+        return false;
+    }
     private void handlers(ClassInfo classInfo, MethodInfo methodInfo,RoutingContext routingContext){
         if (handleBefores(routingContext,classInfo,methodInfo)){
             return;
@@ -283,15 +300,21 @@ public class SummerRouter {
             Object result = methodInfo.getMethod().invoke(classInfo.getClazzObj(),args);
             if (result!=null&&result.getClass() != Void.class){
                 if (!routingContext.response().ended()){
-                    if (result instanceof  String){
-                        routingContext.response().end((String) result);
-                    }else{
-                        if (methodInfo.getProducesType().indexOf(MediaType.TEXT_XML)>=0||
-                                methodInfo.getProducesType().indexOf(MediaType.APPLICATION_XML)>=0 ){
-                            routingContext.response().end(convert2XML(result));
+
+                    if( handleAfters(routingContext,classInfo,methodInfo,result)){
+                        return;
+                    }
+                    if (!routingContext.response().ended()){
+                        if (result instanceof  String){
+                            routingContext.response().end((String) result);
                         }else{
-                            routingContext.response()
-                                    .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8").end(JsonObject.mapFrom(result).encodePrettily());
+                            if (methodInfo.getProducesType().indexOf(MediaType.TEXT_XML)>=0||
+                                    methodInfo.getProducesType().indexOf(MediaType.APPLICATION_XML)>=0 ){
+                                routingContext.response().end(convert2XML(result));
+                            }else{
+                                routingContext.response()
+                                        .putHeader("Content-Type", MediaType.APPLICATION_JSON+";charset=utf-8").end(JsonObject.mapFrom(result).encodePrettily());
+                            }
                         }
                     }
                 }

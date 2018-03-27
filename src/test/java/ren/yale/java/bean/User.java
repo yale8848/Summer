@@ -1,11 +1,13 @@
 package ren.yale.java.bean;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Yale
- *
- * create at:  2018-02-01 17:23
+ * create at: 2018-03-27 17:30
  **/
-public class Test {
+@XmlRootElement
+public class User {
     private String name;
     private int age;
 

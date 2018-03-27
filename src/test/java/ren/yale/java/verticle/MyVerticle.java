@@ -1,19 +1,12 @@
 package ren.yale.java.verticle;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.json.JsonArray;
-import io.vertx.ext.sql.ResultSet;
 import io.vertx.ext.sql.SQLConnection;
-import io.vertx.ext.sql.UpdateResult;
-import io.vertx.config.ConfigRetriever;
-import io.vertx.config.ConfigRetrieverOptions;
-import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ren.yale.java.bean.DBTest;
-import ren.yale.java.bean.UserInfo;
 import ren.yale.java.event.EventMessage;
 import ren.yale.java.sql.ResultSetMapper;
 import ren.yale.java.sql.SummerSQL;
@@ -25,13 +18,18 @@ import java.util.List;
  * Yale
  * create at: 2018-02-02 16:06
  **/
-public class RXDBVerticle extends AbstractVerticle {
-    private final static Logger LOGGER = LogManager.getLogger(RXDBVerticle.class.getName());
+public class MyVerticle extends AbstractVerticle {
+    private final static Logger LOGGER = LogManager.getLogger(MyVerticle.class.getName());
     private JDBCClient jdbcReader;
 
     @Override
     public void start() throws Exception {
-
+        vertx.eventBus().consumer("user",message -> {
+            EventMessage eventMessage = (EventMessage) message.body();
+            eventMessage.success(true);
+            eventMessage.setMessage("Hello "+eventMessage.getObject());
+            message.reply(eventMessage);
+        });
 
         vertx.fileSystem().readFile("dev/dbt.json",bufferAsyncResult -> {
             if (bufferAsyncResult.succeeded()){

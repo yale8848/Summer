@@ -9,7 +9,7 @@ Vertx router with JAX-RS
 <dependency>
   <groupId>ren.yale.java</groupId>
   <artifactId>summer</artifactId>
-  <version>1.1.7</version>
+  <version>1.1.8</version>
 </dependency>
 
 ```
@@ -31,48 +31,63 @@ Hello.java
 ```java
 
 @Path("/hello")
-@Before(TestInterceptor.class)
+@Before(LogInterceptor.class)
 public class Hello {
 
     @GET
-    @Path("/h1/{id}")
+    @Path("/html/{name}")
     @Produces({MediaType.TEXT_HTML})
     public String h1(@Context RoutingContext routingContext,
-                     @PathParam("id") String id,
-                     @DefaultValue("2") @QueryParam("step") int step, String text, @Context HttpServerRequest request,
-                     @Context HttpServerResponse response){
+                     @PathParam("name") String name,
+                     @DefaultValue("18") @QueryParam("age") int age, String text){
+        return String.format("<html><body>name:%s,age:%d</body></html>",name,age);
+    }
 
-        return "<html><body>bbcc</body></html>";
+    @POST
+    @Path("/name/bob")
+    @Produces({MediaType.APPLICATION_JSON})
+    public User h2(@QueryParam("age") int age,@FormParam("name") String name) {
+        User u = new User();
+        u.setName(name);
+        u.setAge(age);
+        return u;
     }
 
     @GET
-    @Path("/h2")
-    public Test h2(){
-        return new Test();
-    }
-
-    @GET
-    @Path("/h3")
+    @Path("/async")
     public void h3(@Context HttpServerResponse response, @Context Vertx vertx){
-        response.end("<html><body>bb</body></html>");
+
+        vertx.eventBus().send("user",EventMessage.message("bob").setKey("name"),message->{
+            EventMessage eventMessage = (EventMessage) message.result().body();
+           if (eventMessage.isSuccess()){
+               String ret= String.format("name:%s,age:%d",eventMessage.getMessage(),18);
+               response.end(ret);
+          }else{
+               response.end("error");
+           }
+        });
+
     }
 
     @GET
-    @Path("/xml1")
+    @Path("/xml")
     @Produces({MediaType.TEXT_XML})
-    public Test xml1(){
-        return new Test();
+    public User xml(){
+        return new User();
     }
 
     @GET
-    @Path("/xml2")
-    @Produces({MediaType.APPLICATION_XML})
-    public Test xml2(){
-        return new Test();
+    @Path("/aop")
+    @Produces({MediaType.APPLICATION_JSON})
+    @After(ChangeUserInterceptor.class)
+    public User getInter(){
+        User u = new User();
+        u.setName("bob");
+        u.setAge(18);
+        return u;
     }
 
 }
-
 
 ```
 
@@ -82,27 +97,41 @@ Like Hello.java, you can create your own resource and then call `summerServer.ge
 
 ## AOP
 
-- Create a intercepter implements Interceptor
+- Create a intercepter implements Interceptor. @After interceptor only work in sync mode
 
 ```java
 
-public class TestInterceptor implements Interceptor {
-    
+public class LogInterceptor implements Interceptor {
     @Override
-    public boolean handle(RoutingContext routingContext) {
+    public boolean handle(RoutingContext routingContext, Object obj) {
+        System.out.println(routingContext.request().absoluteURI());
         return false;
     }
 }
 
+public class ChangeUserInterceptor implements Interceptor {
+    @Override
+    public boolean handle(RoutingContext routingContext,Object obj) {
+        User user = (User) obj;
+        user.setName("Alice");
+        routingContext.response()
+                .end(JsonObject.mapFrom(user).encodePrettily());
+        return true;
+    }
+}
+
 ```
-`if handle return true will interrupt the chain`
+`if handle return true will interrupt the chain, the method interceptor work before class interceptor`
 
 
 ```java
 
 @Path("/hello")
-@Before(TestInterceptor.class)
+@Before(LogInterceptor.class)
 public class Hello {}
+
+@After(ChangeUserInterceptor.class)
+public User getInter(){}
 
 ```
 
@@ -126,7 +155,7 @@ public class Hello {}
 
 ## Return json
 
-By default each method will return Object will return json 
+By default each method will return Object will return json;
 
 ```java
 
