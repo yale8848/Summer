@@ -25,7 +25,7 @@ public class TestMain {
         summerServer.getSummerRouter().registerResource(Hello.class);
         summerServer.getVertx().
                 deployVerticle(SummerServer.WebServer.class.getName());
-        summerServer.start();
+        summerServer.start(deploymentOptions);
     }
 
 

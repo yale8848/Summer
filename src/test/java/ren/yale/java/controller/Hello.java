@@ -76,4 +76,27 @@ public class Hello {
         return u;
     }
 
+
+    @HEAD
+    @Path("/head")
+    public void head(@Context RoutingContext routingContext){
+        routingContext.response().setStatusCode(200).end();
+    }
+    @PUT
+    @Path("/put/bob/{age}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public User put(@Context RoutingContext routingContext,@PathParam("age") int age){
+
+        User u = new User();
+        u.setName("bob");
+        u.setAge(age);
+        return u;
+    }
+
+    @DELETE
+    @Path("/delete/{name}")
+    public String delete(@Context RoutingContext routingContext, @PathParam("name") String name){
+        return "delete "+name+" success";
+    }
+
 }

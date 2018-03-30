@@ -25,6 +25,28 @@ Vertx router with JAX-RS
   summerServer.start();
 
 ```
+or further:
+
+```java
+
+   VertxOptions options = new VertxOptions();
+   options.setBlockedThreadCheckInterval(20000);
+   options.setMaxEventLoopExecuteTime(20000);
+   
+   SummerServer summerServer =SummerServer.create("localhost",8080,options);
+
+   summerServer.getVertx().
+                deployVerticle(MyVerticle.class.getName());
+   
+   summerServer.getSummerRouter().registerResource(Hello.class);
+    
+   DeploymentOptions deploymentOptions = new DeploymentOptions();
+   deploymentOptions.setWorker(true);
+   summerServer.start(deploymentOptions);
+
+
+```
+
 
 Hello.java
 
@@ -86,7 +108,29 @@ public class Hello {
         u.setAge(18);
         return u;
     }
+   
+    @HEAD
+    @Path("/head")
+    public void head(@Context RoutingContext routingContext){
+        routingContext.response().setStatusCode(200).end();
+    }
+    
+    @PUT
+    @Path("/put/bob/{age}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public User put(@Context RoutingContext routingContext,@PathParam("age") int age){
 
+        User u = new User();
+        u.setName("bob");
+        u.setAge(age);
+        return u;
+    }
+
+    @DELETE
+    @Path("/delete/{name}")
+    public String delete(@Context RoutingContext routingContext, @PathParam("name") String name){
+        return "delete "+name+" success";
+    }
 }
 
 ```
