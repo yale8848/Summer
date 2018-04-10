@@ -16,6 +16,33 @@ Vertx router with JAX-RS
 
 ## How to use
 
+Use SummerRouter:
+
+```java
+
+    public class WebServer extends AbstractVerticle {
+
+        @Override
+        public void start() throws Exception {
+            Router router = Router.router(vertx);
+            SummerRouter summerRouter =  new SummerRouter(router,vertx);
+            summerRouter.registerResource(Hello.class);
+            vertx.createHttpServer()
+                    .requestHandler(router::accept)
+                    .listen(port,host,httpServerAsyncResult -> {
+                        if (httpServerAsyncResult.succeeded()){
+                            System.out.println("listen at: http://"+host+":"+port);
+                        }else{
+                            System.out.println(httpServerAsyncResult.cause().getCause());
+                        }
+                    });
+
+        }
+    }
+```
+
+Use simple SummerServer(use io.vertx.core.AbstractVerticle):
+
 ```java
 
   SummerServer summerServer =SummerServer.create(8080);
@@ -48,7 +75,7 @@ or further:
 ```
 
 
-Hello.java
+Hello.java with JAX-RS
 
 ```java
 
