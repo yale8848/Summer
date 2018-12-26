@@ -9,10 +9,12 @@ Vertx router with JAX-RS
 <dependency>
   <groupId>ren.yale.java</groupId>
   <artifactId>summer</artifactId>
-  <version>1.1.8</version>
+  <version>1.1.9</version>
 </dependency>
 
 ```
+
+> wrapper io.vertx.vertx-core:3.5.4
 
 ## How to use
 
