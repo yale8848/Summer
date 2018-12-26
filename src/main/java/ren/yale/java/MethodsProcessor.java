@@ -99,13 +99,13 @@ class MethodsProcessor {
         }
         return null;
     }
-    public static void get(List<ClassInfo> classInfos, Class clazz) {
+    public static ClassInfo  get(List<ClassInfo> classInfos, Class clazz) {
 
 
         Path path = (Path) clazz.getAnnotation(Path.class);
 
         if (path==null||path.value()==null){
-            return;
+            return null;
         }
 
         ClassInfo classInfo = new ClassInfo();
@@ -199,6 +199,8 @@ class MethodsProcessor {
 
         }
         classInfos.add(classInfo);
+
+        return classInfo;
     }
     private static boolean isRestClass(Class cls) {
 

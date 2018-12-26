@@ -88,8 +88,8 @@ public class SummerRouter {
         if (isRegister(clazz)){
             return;
         }
-        MethodsProcessor.get(classInfos, clazz);
-        for (ClassInfo classInfo:classInfos) {
+        ClassInfo classInfo = MethodsProcessor.get(classInfos, clazz);
+        if (classInfo!=null){
             for (MethodInfo methodInfo:classInfo.getMethodInfoList()) {
                 String p = classInfo.getClassPath()+methodInfo.getMethodPath();
                 p = PathParamConverter.converter(p);
@@ -116,10 +116,8 @@ public class SummerRouter {
                 }else{
                     route.handler(getHandler(classInfo,methodInfo));
                 }
-
             }
         }
-
     }
 
     private String addContextPath(String path) {
